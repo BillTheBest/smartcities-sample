@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="http://api-flow.att.io/sandbox/smart-city/on-the-grid/in/flow/events/socket.io.js"></script>
+    <title>Example App</title>
+</head>
+<body>
+<h2 id="title">Example App</h2>
+<div id="event-list" style="color: #000000"></div><br/>
+<div id="controls">
+<input type="text" id="set-tags-text" style="display: inline-block">&nbsp;&nbsp;<button id="set-tags-btn" onclick="setTags()" style="display: inline-block">set tags</button><br>
+<input type="text" id="add-tags-text"style="display: inline-block">&nbsp;&nbsp;<button id="add-tags-btn" onclick="addTags()" style="display: inline-block">add tags</button><br>
+<input type="text" id="remove-tags-text"style="display: inline-block">&nbsp;&nbsp;<button id="remove-tags-btn" onclick="removeTags()" style="display: inline-block">remove tags</button><br><br>
+<button id="remove-all-tags-btn" onclick="removeAllTags()">remove all tags</button>
+<button id="get-tags-btn" onclick="getTags()">get tags</button>
+<button id="available-tags-btn" onclick="availableTags()">available tags</button>
+<br/>
+<br/>
+<div id="help" style="color: #9b9b9b">Enter either comma delimited (,) tags or plus delimited (+) tags. <br>Example - <b>midtown,atlanta,puppies</b> subscribes to devices that match any of those tags. <br>While <b>midtown+atlanta+puppies</b> subscribes to devices that must have all of those tags.</div>
+</div>
+</body>
+<script>
+    // path to socket.io server
+    var path = "/sandbox/smart-city/on-the-grid/in/flow/events";
+    // socket.io connection
+    var socket = io("http://api-flow.att.io", {path: path});
+    // on connect
+    socket.on("connect", function() {
+        console.log("socket connected");
+        // subscribe to tags (use ['*'] for all)
+        socket.emit('tags', ["midtown","atlanta","puppies"]); // these are fake, use something more meaningful ;)
+        //socket.emit("tags", ["*"]);
+        // listen for messages
+        socket.on("message", function(message) {
+            console.log("received socket.io message:", message);
+            $("#event-list").append(message + "<br/>");
+        });
+        // listen for events
+        socket.on("event", function(message) {
+            console.log("event:", message);
+        });
+        // listen for subscription tags
+        socket.on("tags", function(message) {
+            console.log("tags", message);
+        });
+        // listen for available tags
+        socket.on("availableTags", function(message) {
+            console.log("availableTags", message);
+        });
+    });
+
+    // socket error
+    socket.on("error", function(message) {
+        console.log("error", message);
+    });
+    // socket connect error
+    socket.on("connect_error", function(message) {
+        console.log("connect_error", message);
+    });
+    // socket reconnect error
+    socket.on('reconnect_failed', function(message) {
+        console.log("reconnect_error", message);
+    });
+    // emit set tags message
+    function setTags() {
+        var tags = $("#set-tags-text").val().split(",");
+        socket.emit('tags', tags);
+        $("#set-tags-text").val("");
+    }
+    // emit add tags message
+    function addTags() {
+        var tags = $("#add-tags-text").val().split(",");
+        socket.emit('addTags', tags);
+        $("#add-tags-text").val("");
+    }
+    // emit remove tags message
+    function removeTags() {
+        var tags = $("#remove-tags-text").val().split(",");
+        socket.emit('removeTags', tags);
+        $("#remove-tags-text").val("");
+    }
+    // emit empty tags
+    function removeAllTags() {
+        socket.emit('tags', []);
+    }
+    // get current subscriptions
+    function getTags() {
+        socket.emit('tags');
+    }
+    // emit request for available tags
+    function availableTags() {
+        socket.emit('availableTags');
+    }
+</script>
+</html>
