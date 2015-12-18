@@ -1,4 +1,4 @@
-# AT&T Smart Cities Smaple App
+# AT&T Smart Cities Sample App
 
 ##Getting Started
 
