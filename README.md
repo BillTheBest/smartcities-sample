@@ -1,4 +1,4 @@
-# AT&T Smart Cities Sample App
+# AT&T Smart Cities Sample Code
 
 This sample application is part of the AT&T Smart Cities Hackathon track. You can get additional informatin, as well as access to documentation here: http://developer.att.com/smart-cities
 
