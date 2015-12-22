@@ -15,3 +15,8 @@ You can download this repository and get started using our sample smart city dev
 
 Through this, you are essentially subscribing to all the devices that are public, have the tag beginning with “sc-“, and any other parameters you add.
 
+
+## License
+
+This repository is provided under the MIT license. See [LICENSE](/LICENSE) for applicable terms.
+
