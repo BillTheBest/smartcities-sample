@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <title>post a value to smart city</title>
+</head>
+<body>
+<div id="container" style="display: inline-block">
+    <div id="devices-container" style="display: inline-block">
+        <div id="devices-header"><b>Device</b></div>
+        <div id="devices-column" style="display: inline-block">
+            <select id="devices"></select>
+        </div>
+    </div>
+    <div id="streams-column" style="display: inline-block">
+        <div id="streams-header"><b>Stream</b></div>
+        <select id="streams"></select>
+    </div>
+    <div id="value-column" style="display: inline-block">
+        <div id="value-header"><b>Value</b></div>
+        <input type="text" id="value">
+    </div>
+    <div id="button-column" style="display: inline-block">
+        <button id="submit" onclick="submit()">Submit</button>
+    </div>
+</div>
+<br><br>
+For documentation and explanation of values, <a href="#">click here</a>
+</body>
+<script>
+    // list devices
+    $.getJSON("http://run-east.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/devices", function(data) {
+        if (data.devices) {
+            for (var i = 0; i < data.devices.length; i++) {
+                var device = data.devices[i];
+                $('#devices')
+                        .append($("<option></option>")
+                                .attr("value",device.id)
+                                .text(device.name));
+            }
+            // on change
+            $("#devices").change(function() {
+                // clear existing streams and value
+                $("#streams").empty();
+                $("#value").empty();
+                // get streams
+                var deviceId = $("#devices").val();
+                $.getJSON("http://run-east.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/streams?deviceId=" + deviceId, function(data) {
+                    if (data.streams) {
+                        for (var i = 0; i < data.streams.length; i++) {
+                            var stream = data.streams[i];
+                            $('#streams')
+                                    .append($("<option></option>")
+                                            .attr("value",stream.name)
+                                            .text(stream.name));
+                        }
+                        // show streams select
+                        $("#streams").show();
+                        $("#value").show();
+                        $("#streams-header").show();
+                        $("#value-header").show();
+                        $("#submit").show();
+
+                        // set init value
+                        $("#value").val(data.streams[0].value);
+
+                        // on change
+                        $("#streams").change(function() {
+                            // clear existing value
+                            $("#value").val("");
+                            for (var i = 0; i < data.streams.length; i++) {
+                                if (data.streams[i].name == $('#streams').val()) {
+                                    //console.log(data.streams[i].value);
+                                    $("#value").val(data.streams[i].value);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        }
+    });
+
+    $(function() {
+        // hide fields
+        $("#streams").hide();
+        $("#value").hide();
+        $("#streams-header").hide();
+        $("#value-header").hide();
+        $("#submit").hide();
+        // insert first item
+        $("#devices").prepend("<option value='Select device...' selected='selected'>Select device...</option>");
+    })
+
+    function submit() {
+        if (!$("#value").val() || $("#value").val() == "") {
+            alert("a value is required");
+            return;
+        }
+        $("#submit").attr("disabled", true);
+        var data = {};
+        data.deviceId = $("#devices").val();
+        data.streamId = $("#streams").val();
+        data.value = $("#value").val();
+        $.post("http://run-east.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/postValue", data, function(res) {
+            $("#submit").attr("disabled", false);
+            try {
+                // add to history
+                $("#devices").before($("#devices option:selected").text() + "<br>");
+                $("#streams").before($("#streams option:selected").text() + "<br>");
+                $("#value").before($("#value").val() + "<br>");
+                //alert(JSON.stringify(res));
+            }
+            catch (ex) {
+                alert(res);
+            }
+        });
+    }
+</script>
+</html>

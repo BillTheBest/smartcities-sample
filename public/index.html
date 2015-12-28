@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="http://api-flow.att.io/sandbox/smart-city/on-the-grid/in/flow/events/socket.io.js"></script>
+    <script src="http://run-east.att.io/f3d5e7227fb53/6ec7d0945763/32567042d798e81/in/flow/events/socket.io.js"></script>
     <title>Example App</title>
 </head>
 <body>
@@ -24,9 +24,9 @@
 </body>
 <script>
     // path to socket.io server
-    var path = "/sandbox/smart-city/on-the-grid/in/flow/events";
+    var path = "/f3d5e7227fb53/6ec7d0945763/32567042d798e81/in/flow/events";
     // socket.io connection
-    var socket = io("http://api-flow.att.io", {path: path});
+    var socket = io("http://run-east.att.io", {path: path});
     // on connect
     socket.on("connect", function() {
         console.log("socket connected");
