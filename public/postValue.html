@@ -30,7 +30,7 @@ For documentation and explanation of values, <a href="#">click here</a>
 </body>
 <script>
     // list devices
-    $.getJSON("http://run-east.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/devices", function(data) {
+    $.getJSON("http://run-west.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/devices", function(data) {
         if (data.devices) {
             for (var i = 0; i < data.devices.length; i++) {
                 var device = data.devices[i];
@@ -46,7 +46,7 @@ For documentation and explanation of values, <a href="#">click here</a>
                 $("#value").empty();
                 // get streams
                 var deviceId = $("#devices").val();
-                $.getJSON("http://run-east.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/streams?deviceId=" + deviceId, function(data) {
+                $.getJSON("http://run-west.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/streams?deviceId=" + deviceId, function(data) {
                     if (data.streams) {
                         for (var i = 0; i < data.streams.length; i++) {
                             var stream = data.streams[i];
@@ -103,7 +103,7 @@ For documentation and explanation of values, <a href="#">click here</a>
         data.deviceId = $("#devices").val();
         data.streamId = $("#streams").val();
         data.value = $("#value").val();
-        $.post("http://run-east.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/postValue", data, function(res) {
+        $.post("http://run-west.att.io/daa244d6cabbb/f812823805c2/36016024ad8ff4e/in/flow/postValue", data, function(res) {
             $("#submit").attr("disabled", false);
             try {
                 // add to history
